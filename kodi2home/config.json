@@ -1,0 +1,29 @@
+{
+  "name": "Kodi2Home",
+  "version": "0.1",
+  "slug": "kodi2home",
+  "description": "Kodi is calling home assistant",
+  "url": "https://github.com/DJJo14/kodi2home",
+  "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "startup": "application",
+  "boot": "auto",
+  "homeassistant_api": true,
+  "options": {
+  	"kodi_adress": "youre kodi ip adress",
+  	"kodi_http_port": 8080,
+  	"kodi_ws_port": 9090,
+  	"kodi_username": "Youre username",
+  	"kodi_password": "Youre password",
+  	"home_adress": "ws://supervisor/core/api/websocket",
+  	"home_ssl": false
+  	},
+  "schema": {
+  	"kodi_adress": "str",
+  	"kodi_http_port": "int",
+  	"kodi_ws_port": "int",
+  	"kodi_username": "str",
+  	"kodi_password": "str",
+  	"home_adress": "str",
+  	"home_ssl": "bool"
+  }
+}
