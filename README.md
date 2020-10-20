@@ -21,7 +21,8 @@ put somting like this in your keymap of kodi:
 ```xml
 <volume_up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.volume_up"})</volume_up>
 ```
-add "automation.volume_up" will be triggert, when pressing volume_up
+add "automation.volume_up" will be triggert, when pressing volume_up.
+
 
 ## Why
 This is done so you can easy call services at home assistant, the other way around was already possible but, this is still a missing feature of Home Assistant.
@@ -32,5 +33,8 @@ With Kodi you can call scripts and with that do the same, because it has to star
 ## How is it done
 Kodi2home is not more than two websocket's connected to etch other. One to code lisening to the "NotifyAll" and the other one sending it to Home Assistant. Both of the websockets are already connected.
 It is done in a way Home Assistant uses kodi, so if it is liked, it can be intergated in to Home Assistant kodi intergration.
+
+### Reload keymap
+When you start the addon the keymap of kodi gets reloaded. So no need to restart all of kodi when changing the keymap(.xml), just restart the addon
 
 Tip's, commands or spelling error's, just submit an issue
