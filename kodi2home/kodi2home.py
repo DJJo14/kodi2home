@@ -43,7 +43,7 @@ class kodi2home():
 
 	
 	async def connect_to_home(self):
-		logging.info(f"kodi settings: {self.config['home_adress']}, {self.config['home_access_token']},  {self.config['home_ssl']}, {sys.argv[1]}", flush=True)
+		logging.info(f"kodi settings: {self.config['home_adress']}, {self.config['home_access_token']},  {self.config['home_ssl']}, {sys.argv[1]}")
 		if self.config['home_ssl']:
 			home_ssl = True
 		else:
