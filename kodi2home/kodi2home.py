@@ -73,7 +73,12 @@ class kodi2home():
 			  }
 		
 		logging.info(f"{sender} is calling home {json.dumps(service_call)}")
-		await self.websocket.send(json.dumps( service_call ))
+		try:
+			await self.websocket.send(json.dumps( service_call ))
+		except (websockets.exceptions.ConnectionClosedOK):
+			await self.websocket.close()
+			await self.connect_to_home()
+			await self.websocket.send(json.dumps( service_call ))
 	
 	async def run(self):
 		
