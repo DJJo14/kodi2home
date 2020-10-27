@@ -1,0 +1,16 @@
+<keymap>
+  <global>
+    <keyboard>
+        <up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_up"})</up>
+        <down>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_down"})</down>  
+        <left>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_left"})</left>
+        <right>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_right"})</right>
+        <enter>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_select"})</enter>      
+        <return>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_select"})</return>
+
+	<volume_up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_volume_up"})</volume_up>
+	<volume_down>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_volume_down"})</volume_down>
+    </keyboard>
+  </global>
+
+</keymap>

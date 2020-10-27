@@ -37,4 +37,10 @@ It is done in a way Home Assistant uses kodi, so if it is liked, it can be inter
 ### Reload keymap
 When you start the addon the keymap of kodi gets reloaded. So no need to restart all of kodi when changing the keymap(.xml), just restart the addon
 
+## Known issue
+For some reason Home Assistant disconnects when you fire to may, automations at ones. and it response to that with a disconnect, i do not know a better way to then to just reconnect. 
+
+# example
+In webos_example_automation.yaml there is a example of the automations that switches the remote between kodi(at the HDMI) and the webos apps. This way you can control the tv with one remote. For example a Measy GP811 or a RII usb wireless keyboard. In webos_example_keymap.xml is the kodi keymap to use with that.
+
 Tip's, commands or spelling error's, just submit an issue

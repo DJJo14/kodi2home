@@ -1,0 +1,178 @@
+- alias: TV volume up
+  id: tv_volume_up
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - service: media_player.volume_up
+    data:
+        entity_id: media_player.tv_woonkamer
+        
+- alias: TV volume down
+  id: tv_volume_down
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - service: media_player.volume_down
+    data:
+        entity_id: media_player.tv_woonkamer
+        
+- alias: TV down
+  id: tv_down 
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ state_attr("media_player.tv_woonkamer", "source") in ["NPO", "Netflix", "YouTube"] }}'
+      sequence:
+        - service: webostv.button
+          data:
+            entity_id: media_player.tv_woonkamer
+            button: DOWN
+    default:
+      service: kodi.call_method
+      data:
+        entity_id: media_player.kodiwoonkamer
+        method: Input.Down
+
+        
+- alias: TV up
+  id: tv_up 
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ state_attr("media_player.tv_woonkamer", "source") in ["NPO", "Netflix", "YouTube"] }}'
+      sequence:
+        - service: webostv.button
+          data:
+            entity_id: media_player.tv_woonkamer
+            button: UP
+    default:
+      service: kodi.call_method
+      data:
+        entity_id: media_player.kodiwoonkamer
+        method: Input.Up
+        
+- alias: TV left
+  id: tv_left 
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ state_attr("media_player.tv_woonkamer", "source") in ["NPO", "Netflix", "YouTube"] }}'
+      sequence:
+        - service: webostv.button
+          data:
+            entity_id: media_player.tv_woonkamer
+            button: LEFT
+    default:
+      service: kodi.call_method
+      data:
+        entity_id: media_player.kodiwoonkamer
+        method: Input.Left
+
+        
+- alias: TV right
+  id: tv_right 
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ state_attr("media_player.tv_woonkamer", "source") in ["NPO", "Netflix", "YouTube"] }}'
+      sequence:
+        - service: webostv.button
+          data:
+            entity_id: media_player.tv_woonkamer
+            button: RIGHT
+    default:
+      service: kodi.call_method
+      data:
+        entity_id: media_player.kodiwoonkamer
+        method: Input.Right
+        
+- alias: TV Home
+  id: tv_home 
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ state_attr("media_player.tv_woonkamer", "source") in ["NPO", "Netflix", "YouTube"] }}'
+      sequence:
+        - service: webostv.button
+          data:
+            entity_id: media_player.tv_woonkamer
+            button: EXIT
+    default:
+      service: kodi.call_method
+      data:
+        entity_id: media_player.kodiwoonkamer
+        method: Input.Home
+        
+- alias: TV Back
+  id: tv_back 
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ state_attr("media_player.tv_woonkamer", "source") in ["NPO", "Netflix", "YouTube"] }}'
+      sequence:
+        - service: webostv.button
+          data:
+            entity_id: media_player.tv_woonkamer
+            button: BACK
+    default:
+      service: kodi.call_method
+      data:
+        entity_id: media_player.kodiwoonkamer
+        method: Input.Back
+        
+- alias: TV Select
+  id: tv_select 
+  description: ''
+  trigger:
+  mode: queued
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ state_attr("media_player.tv_woonkamer", "source") in ["NPO", "Netflix", "YouTube"] }}'
+      sequence:
+        - service: webostv.button
+          data:
+            entity_id: media_player.tv_woonkamer
+            button: ENTER
+    default:
+      service: kodi.call_method
+      data:
+        entity_id: media_player.kodiwoonkamer
+        method: Input.Select
+        
