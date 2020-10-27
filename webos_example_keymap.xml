@@ -11,6 +11,6 @@
 	<volume_up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_volume_up"})</volume_up>
 	<volume_down>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.tv_volume_down"})</volume_down>
     </keyboard>
-	</global>
+  </global>
 
 </keymap>
