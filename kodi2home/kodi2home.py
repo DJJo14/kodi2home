@@ -79,6 +79,11 @@ class kodi2home():
 			await self.websocket.close()
 			await self.connect_to_home()
 			await self.websocket.send(json.dumps( service_call ))
+		except (websockets.exceptions.ConnectionClosedError):
+			await self.websocket.close()
+			await self.connect_to_home()
+			logging.info(f"reconnect on way to fast pressing buttons")
+			await self.websocket.send(json.dumps( service_call ))
 	
 	async def run(self):
 		
