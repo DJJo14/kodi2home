@@ -176,24 +176,3 @@
         entity_id: media_player.kodiwoonkamer
         method: Input.Select
         
-- alias: TV Play pause
-  id: tv_play_pause
-  description: ''
-  trigger:
-  mode: queued
-  condition: []
-  action:
-  - choose:
-    - conditions:
-      - condition: template
-        value_template: '{{ state_attr("media_player.tv_woonkamer", "source") in ["NPO", "Netflix", "YouTube"] }}'
-      sequence:
-        - service: webostv.button
-          data:
-            entity_id: media_player.tv_woonkamer
-            button: BACK
-    default:
-      service: kodi.call_method
-      data:
-        entity_id: media_player.kodiwoonkamer
-        method: Input.media_play_pause
