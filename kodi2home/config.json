@@ -1,10 +1,11 @@
 {
   "name": "Kodi2Home",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "slug": "kodi2home",
   "description": "Kodi is calling home assistant",
   "url": "https://github.com/DJJo14/kodi2home",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "init":false,
   "startup": "application",
   "boot": "auto",
   "homeassistant_api": true,
