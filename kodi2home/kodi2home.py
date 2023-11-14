@@ -58,7 +58,7 @@ class kodi2home:
 
     async def connect_to_home(self):
         logging.info(
-            f"kodi settings: {self.config['home_adress']},  {self.config['home_ssl']}, {sys.argv[1]}"
+            f"Home assistant settings: {self.config['home_adress']},  {self.config['home_ssl']}, {sys.argv[1]}"
         )
         if self.config["home_ssl"]:
             home_ssl = True
@@ -95,12 +95,14 @@ class kodi2home:
         except websockets.exceptions.ConnectionClosedOK:
             await self.websocket.close()
             await self.connect_to_home()
+            logging.info(f"reconnect on oke connection close")
             await self.websocket.send(json.dumps(service_call))
         except websockets.exceptions.ConnectionClosedError:
             await self.websocket.close()
             await self.connect_to_home()
             logging.info(f"reconnect on way to fast pressing buttons")
             await self.websocket.send(json.dumps(service_call))
+
 
     async def run(self):
         try:
