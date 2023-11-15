@@ -16,10 +16,10 @@ logging.basicConfig(
 # put this in gen.xml
 # <volume_up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.volume_up"})</volume_up>
 
-loop = asyncio.get_event_loop()
 
 
-def ask_exit(signame):
+
+def ask_exit(signame, loop):
     print("got signal %s: exit" % signame)
     loop.stop()
 
@@ -30,7 +30,7 @@ class kodi2home:
     def __init__(self, config_file):
         with open(config_file, "r") as inputfile:
             self.config = json.load(inputfile)
-        pass
+        self.que1 = asyncio.Queue(maxsize=10)
 
     async def connect_to_kodi(self):
         logging.info(
@@ -53,7 +53,6 @@ class kodi2home:
 
         properties = await self.kodi.get_application_properties(["name", "version"])
         logging.info(f"Kodi is connected {properties}")
-        await self.kodi.ping()
         await self.kodi_connection.server.Input.ExecuteAction("reloadkeymaps")
 
     async def connect_to_home(self):
@@ -90,21 +89,57 @@ class kodi2home:
         }
 
         logging.info(f"{sender} is calling home {json.dumps(service_call)}")
-        try:
-            await self.websocket.send(json.dumps(service_call))
-        except websockets.exceptions.ConnectionClosedOK:
-            await self.websocket.close()
-            await self.connect_to_home()
-            logging.info(f"reconnect on oke connection close")
-            await self.websocket.send(json.dumps(service_call))
-        except websockets.exceptions.ConnectionClosedError:
-            await self.websocket.close()
-            await self.connect_to_home()
-            logging.info(f"reconnect on way to fast pressing buttons")
-            await self.websocket.send(json.dumps(service_call))
+        self.que1.put_nowait(service_call)
 
 
-    async def run(self):
+    async def run_send_home(self):
+        while 1:
+            service_call = await self.que1.get()
+            try:
+                await self.websocket.send(json.dumps(service_call))
+            except websockets.exceptions.ConnectionClosedOK:
+                await self.websocket.close()
+                await self.connect_to_home()
+                logging.info(f"reconnect on oke connection close")
+                await self.websocket.send(json.dumps(service_call))
+            except websockets.exceptions.ConnectionClosedError:
+                await self.websocket.close()
+                await self.connect_to_home()
+                logging.info(f"reconnect on way to fast pressing buttons")
+                await self.websocket.send(json.dumps(service_call))
+
+    async def run_recv_home(self):
+        await self.connect_to_home()
+        logging.info("connected to home")
+        while 1:
+            try:
+                async with asyncio.timeout(100):
+                    home_data = await self.websocket.revc()
+            except TimeoutError:
+                home_data = ""
+
+            if home_data != "":
+                logging.info(f"data from home: {home_data}")
+                message_home = json.loads(home_data)
+
+                if "type" in message_home:
+                    if message_home["type"] == "ping":
+                        pong_message = {
+                            "type": "pong",
+                            "id": message_home["id"]
+                        }
+                        self.websocket.send(json.dumps(pong_message))
+            else:
+                ping_message = {
+                    "id": 19,
+                    "type": "ping"
+                }
+                self.websocket.send(json.dumps(ping_message))
+            
+
+        
+
+    async def run_recive_kodi(self):
         try:
             await self.connect_to_kodi()
         except CannotConnectError:
@@ -113,8 +148,6 @@ class kodi2home:
             logging.error("InvalidAuthError, wrong login")
             return
 
-        await self.connect_to_home()
-        logging.info("connected")
         while 1:
             try:
                 if self.kodi_connection.connected:
@@ -126,21 +159,22 @@ class kodi2home:
             except InvalidAuthError:
                 logging.error("InvalidAuthError, wrong login")
                 return
-            await asyncio.sleep(10)
-        logging.info("Done")
+            await asyncio.sleep(10-0)
 
 
-def main():
+async def add_handels():
+    loop = asyncio.get_running_loop()
     for signame in ("SIGINT", "SIGTERM"):
         loop.add_signal_handler(
-            getattr(signal, signame), functools.partial(ask_exit, signame)
+            getattr(signal, signame), functools.partial(ask_exit, signame, loop)
         )
 
+def main():
     try:
         k = kodi2home("options.json")
-        loop.run_until_complete(k.run())
-        loop.run_forever()
+        asyncio.run( asyncio.gather(k.run_recive_kodi(), add_handels(), k.run_send_home()), k.run_recv_home())
     finally:
+        loop = asyncio.get_running_loop()
         loop.close()
 
 
