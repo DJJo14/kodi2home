@@ -114,7 +114,7 @@ class kodi2home:
         while 1:
             try:
                 async with asyncio.timeout(100):
-                    home_data = await self.websocket.revc()
+                    home_data = await self.websocket.recv()
             except TimeoutError:
                 home_data = ""
 
@@ -128,13 +128,14 @@ class kodi2home:
                             "type": "pong",
                             "id": message_home["id"]
                         }
-                        self.websocket.send(json.dumps(pong_message))
+                        await self.websocket.send(json.dumps(pong_message))
             else:
+                self.id_nr += 1
                 ping_message = {
-                    "id": 19,
+                    "id": self.id_nr,
                     "type": "ping"
                 }
-                self.websocket.send(json.dumps(ping_message))
+                await self.websocket.send(json.dumps(ping_message))
             
 
         
@@ -159,7 +160,7 @@ class kodi2home:
             except InvalidAuthError:
                 logging.error("InvalidAuthError, wrong login")
                 return
-            await asyncio.sleep(10-0)
+            await asyncio.sleep(100)
 
 
 async def add_handels():
@@ -172,7 +173,9 @@ async def add_handels():
 def main():
     try:
         k = kodi2home("options.json")
-        asyncio.run( asyncio.gather(k.run_recive_kodi(), add_handels(), k.run_send_home()), k.run_recv_home())
+        tasks = asyncio.gather(k.run_recive_kodi(), add_handels(), k.run_send_home(), k.run_recv_home())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete( tasks )
     finally:
         loop = asyncio.get_running_loop()
         loop.close()
