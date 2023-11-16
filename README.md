@@ -48,6 +48,8 @@ Home assitant can control kodi, but when you press a button on kodi you can not 
 With Kodi you can call scripts and with that do the same. For example call a script that calls a webtrigger. Because it has to start the script and then connect, it can be a sec later before the action is done. I created a video to see the difference. Watch closely to number change. Volume up is kodi2home and down is a script.
 [![Call a script vs kodi2home](http://img.youtube.com/vi/MlcBf1nm40w/0.jpg)](http://www.youtube.com/watch?v=MlcBf1nm40w)
 
+The hard part is to send out a message from kodi, without calling a script. Because calling a script from kodi takes almost 1 sec. This is where the NotifyAll comes in, this is a buildin message from kodi sending to all of the connected (web-)sockets. 
+
 ## How is it done
 Kodi2home is not more than two websockets connected to each other. One side is lisening for the "NotifyAll" and the other side sending it to Home Assistant. Both of the websockets are already connected. So there is less delay there. 
 The script is programed just like Home Assistant kodi intergration, so if it is liked, it can be intergated in to Home Assistant kodi intergration.
@@ -56,7 +58,7 @@ The script is programed just like Home Assistant kodi intergration, so if it is 
 When you start the addon the keymap of kodi gets reloaded. So no need to restart all of kodi when changing the keymap(.xml), just restart the addon. 
 
 ## Known issue
-For some reason Home Assistant disconnects when you fire to may, automations at ones. and it response to that with a disconnect, i do not know a better way to then to just reconnect. 
+Possibly fixed in 0.3.0, let me know. For some reason Home Assistant disconnects when you fire to may, automations at ones. And it response to that with a disconnect, i do not know a better way to then to just reconnect. 
 
 # example
 In webos_example_automation.yaml there is a example of the automations that switches the remote between kodi(at the HDMI) and the webos apps. This way you can control the tv with one remote. For example a Measy GP811 or a RII usb wireless keyboard. In webos_example_keymap.xml is the kodi keymap to use with that.
