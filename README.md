@@ -45,14 +45,15 @@ Add an automation on home assistant with the id/name: "volume_up".(you can leave
 Home assitant can control kodi, but when you press a button on kodi you can not trigger a action on home assistant. Kodi2home is a man in the middel. I found this a missing feature of Home assistent. This way you can turn on a light with a kodi remote. Or change the volume on your amplifier instead of kodi. Or much smarter things.
 
 ## Why this way
-With Kodi you can call scripts and with that do the same. Like calling a webtrigger. Because it has to start the script and then connect, it can be a sec later before the action is done.
+With Kodi you can call scripts and with that do the same. For example call a script that calls a webtrigger. Because it has to start the script and then connect, it can be a sec later before the action is done. I created a video to see the difference. Watch closely to number change. Volume up is kodi2home and down is a script.
+[![Call a script vs kodi2home](http://img.youtube.com/vi/MlcBf1nm40w/0.jpg)](http://www.youtube.com/watch?v=MlcBf1nm40w)
 
 ## How is it done
-Kodi2home is not more than two websockets connected to each other. One side is lisening for the "NotifyAll" and the other side sending it to Home Assistant. Both of the websockets are already connected.
-It is done in a way Home Assistant uses kodi, so if it is liked, it can be intergated in to Home Assistant kodi intergration.
+Kodi2home is not more than two websockets connected to each other. One side is lisening for the "NotifyAll" and the other side sending it to Home Assistant. Both of the websockets are already connected. So there is less delay there. 
+The script is programed just like Home Assistant kodi intergration, so if it is liked, it can be intergated in to Home Assistant kodi intergration.
 
 ### Reload keymap
-When you start the addon the keymap of kodi gets reloaded. So no need to restart all of kodi when changing the keymap(.xml), just restart the addon
+When you start the addon the keymap of kodi gets reloaded. So no need to restart all of kodi when changing the keymap(.xml), just restart the addon. 
 
 ## Known issue
 For some reason Home Assistant disconnects when you fire to may, automations at ones. and it response to that with a disconnect, i do not know a better way to then to just reconnect. 
