@@ -42,14 +42,13 @@ put somting like this in your keymap of kodi:
 Add an automation on home assistant with the id/name: "volume_up".(you can leave automation triggers empty) Start up the kodi2home add-on and press the volume_up button. The automation will be triggerd on home assistant. Home assistant run you action that you put in you automation.
 
 ## Why
-Home assitant can control kodi, but when you press a button on kodi you can not trigger a action on home assistant. Kodi2home is a man in the middel. I found this a missing feature of Home assistent. This way you can turn on a light with a kodi remote. 
-This is done so you can easy call services at home assistant, the other way around was already possible but, this is still a missing feature of Home Assistant.
+Home assitant can control kodi, but when you press a button on kodi you can not trigger a action on home assistant. Kodi2home is a man in the middel. I found this a missing feature of Home assistent. This way you can turn on a light with a kodi remote. Or change the volume on your amplifier instead of kodi. Or much smarter things.
 
 ## Why this way
-With Kodi you can call scripts and with that do the same, because it has to start the script and then connect, it can be a sec later before the action is done.
+With Kodi you can call scripts and with that do the same. Like calling a webtrigger. Because it has to start the script and then connect, it can be a sec later before the action is done.
 
 ## How is it done
-Kodi2home is not more than two websocket's connected to etch other. One to code lisening to the "NotifyAll" and the other one sending it to Home Assistant. Both of the websockets are already connected.
+Kodi2home is not more than two websockets connected to each other. One side is lisening for the "NotifyAll" and the other side sending it to Home Assistant. Both of the websockets are already connected.
 It is done in a way Home Assistant uses kodi, so if it is liked, it can be intergated in to Home Assistant kodi intergration.
 
 ### Reload keymap
