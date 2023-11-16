@@ -1,12 +1,27 @@
 Kodi2home
 =========
 In home assistant you can connect to Kodi and control Kodi, but you cannot trigger an action when pressing a button on Kodi. This is where Kodi2home comes in to play. Kodi2home connects to the websocket from Kodi and to the websocket from home assistant. When it receives a "notifyall" from Kodi, it will trigger an automation on home assistant. In Kodi you change the keymap so that when you press a button it wil send the "notifyall" message. This whay you can turn on a light with the remote from Kodi. 
-
+```mermaid
+flowchart LR
+    A["Remote"] -->|usb| B(Kodi)
+    B --> |NotifyAll| C{Kodi2Home}
+    C -->|trigger automation| D[Home Assistant]
+    D --> E[action]
+```
 Note: When you change a button in the keymap of Kodi, it will override the existing function of that button. But you can control Kodi in your home assistant automation, and still do the same action. 
 
-Install by going to Supervisor -> Add-on store -> Add new repository by url and fill in `https://github.com/DJJo14/kodi2home`.
+# Install
 
-Example config for the add-on:
+You Need the falowing thinks:
+ - Home assitant
+ - Kodi
+ - A Usb remote connected to kodi
+ - A whay to change the keymap on kodi <BR>
+   (example: ssh in to libreelec)
+   
+Install kodi2home by going to Settings -> Addon's -> Add-on store -> Vertical ... (upperright) -> repositories -> fill in the url: `https://github.com/DJJo14/kodi2home`.
+After a refresh the Kodi2home is now in you add-on store. click on it and press install. After installing you must configurate the add-on the configuration tab.
+Example of the configuration:
 ```yaml
 kodi_adress: youre kodi ip adress
 kodi_http_port: 8080
@@ -17,16 +32,17 @@ home_adress: 'ws://supervisor/core/api/websocket'
 home_ssl: false
 ```
 
-if you are using hassio you do not need to change the home_adress and home_ssl. the values are already set to the add-on values.
+if you are using hassio you do not need to change the home_adress and home_ssl. The values are already set to the add-on values.
 
+You need to change the keymap on kodi. [More info](https://kodi.wiki/view/HOW-TO:Modify_keymaps) There is a ¨Add-on:Keymap Editor" but you can not set it to send the NotifyAll message. So you need to change it in the keyboard.xml (or other .xml name)
 put somting like this in your keymap of kodi:
 ```xml
 <volume_up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.volume_up"})</volume_up>
 ```
-add "automation.volume_up" will be triggert, when pressing volume_up.
-
+Add an automation on home assistant with the id/name: "volume_up".(you can leave automation triggers empty) Start up the kodi2home add-on and press the volume_up button. The automation will be triggerd on home assistant. Home assistant run you action that you put in you automation.
 
 ## Why
+Home assitant can control kodi, but when you press a button on kodi you can not trigger a action on home assistant. Kodi2home is a man in the middel. I found this a missing feature of Home assistent. This way you can turn on a light with a kodi remote. 
 This is done so you can easy call services at home assistant, the other way around was already possible but, this is still a missing feature of Home Assistant.
 
 ## Why this way
