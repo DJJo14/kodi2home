@@ -15,7 +15,7 @@ home_adress: 'ws://supervisor/core/api/websocket'
 home_ssl: false
 ```
 
-home_adress and home_ssl you not need to change when your are using it in hassio
+if you are using hassio you do not need to change the home_adress and home_ssl. the values are already set to the add-on values.
 
 put somting like this in your keymap of kodi:
 ```xml
