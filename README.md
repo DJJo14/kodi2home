@@ -1,6 +1,8 @@
-kodi2home
+Kodi2home
 =========
-kodi calling Home Assistant
+In home assistant you can connect to Kodi and control Kodi, but you cannot trigger an action when pressing a button on Kodi. This is where Kodi2home comes in to play. Kodi2home connects to the websocket from Kodi and to the websocket from home assistant. When it receives a "notifyall" from Kodi, it will trigger an automation on home assistant. In Kodi you change the keymap so that when you press a button it wil send the "notifyall" message. This whay you can turn on a light with the remote from Kodi. 
+
+Note: When you change a button in the keymap of Kodi, it will override the existing function of that button. But you can control Kodi in your home assistant automation, and still do the same action. 
 
 Install by going to Supervisor -> Add-on store -> Add new repository by url and fill in `https://github.com/DJJo14/kodi2home`.
 
