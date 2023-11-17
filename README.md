@@ -8,7 +8,7 @@ flowchart LR
     C -->|trigger automation| D[Home Assistant]
     D --> E[action]
 ```
-Note: When you change a button in the keymap of Kodi, it will override the existing function of that button. But you can control Kodi in your home assistant automation, and still do the same action. 
+Note: When you change a button in the keymap of Kodi, it will override the existing function of that button. But you can control Kodi in your home assistant automation, and still do the same action. See [Example](#example)
 
 # Install
 
