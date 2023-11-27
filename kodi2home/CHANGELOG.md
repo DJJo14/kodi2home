@@ -1,3 +1,7 @@
+### 0.3.1
+ - add async-timeout to build, needed?
+ - do not print passwords..
+ - password in config.json
 ### 0.3.0
  - now handling the messages from home assistant
  - Fixed Random disconnects from home assistant
