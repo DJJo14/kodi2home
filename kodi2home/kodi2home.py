@@ -34,7 +34,7 @@ class kodi2home:
 
     async def connect_to_kodi(self):
         logging.info(
-            f"kodi settings: {self.config['kodi_adress']},  {self.config['kodi_http_port']} {self.config['kodi_ws_port']}, {self.config['kodi_username']}, , {self.config['kodi_password']}"
+            f"kodi settings: {self.config['kodi_adress']}, {self.config['kodi_http_port']} {self.config['kodi_ws_port']}, {self.config['kodi_username']}, *"
         )
         self.kodi_connection = get_kodi_connection(
             self.config["kodi_adress"],
@@ -57,7 +57,7 @@ class kodi2home:
 
     async def connect_to_home(self):
         logging.info(
-            f"Home assistant settings: {self.config['home_adress']},  {self.config['home_ssl']}, {sys.argv[1]}"
+            f"Home assistant settings: {self.config['home_adress']},  {self.config['home_ssl']}, *"
         )
         if self.config["home_ssl"]:
             home_ssl = True

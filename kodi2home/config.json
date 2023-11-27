@@ -1,6 +1,6 @@
 {
   "name": "Kodi2Home",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "slug": "kodi2home",
   "description": "Kodi is calling home assistant",
   "url": "https://github.com/DJJo14/kodi2home",
@@ -23,7 +23,7 @@
   	"kodi_http_port": "int",
   	"kodi_ws_port": "int",
   	"kodi_username": "str",
-  	"kodi_password": "str",
+  	"kodi_password": "password",
   	"home_adress": "str",
   	"home_ssl": "bool"
   }
