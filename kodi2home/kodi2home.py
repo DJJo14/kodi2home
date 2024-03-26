@@ -59,38 +59,38 @@ class kodi2home:
         logging.info(
             f"Home assistant settings: {self.config['home_adress']},  {self.config['home_ssl']}, *"
         )
-    while True:
-        try:
-            if self.config["home_ssl"]:
-                home_ssl = True
-            else:
-                home_ssl = None
-                
-            self.websocket = await websockets.connect(
-                self.config["home_adress"], ssl=home_ssl
-            )
-            login_org = {"type": "auth", "access_token": sys.argv[1]}
-            data = await self.websocket.recv()
-            logging.info(f"Home Assistant: {data}")
-            await self.websocket.send(json.dumps(login_org))
-            data = await self.websocket.recv()
-            logging.info(f"Home Assistant: {data}")
-            break  # Connection successful, exit the loop
-        except websockets.exceptions.ConnectionClosedError:
-            logging.error("WebSocket connection closed unexpectedly. Retrying...")
-            await asyncio.sleep(5)  # Wait for a few seconds before retrying
-        except websockets.exceptions.InvalidStatusCode as e:
-            if e.status_code == 502:
-                logging.error("502 Bad Gateway. Retrying...")
+        while True:
+            try:
+                if self.config["home_ssl"]:
+                    home_ssl = True
+                else:
+                    home_ssl = None
+                    
+                self.websocket = await websockets.connect(
+                    self.config["home_adress"], ssl=home_ssl
+                )
+                login_org = {"type": "auth", "access_token": sys.argv[1]}
+                data = await self.websocket.recv()
+                logging.info(f"Home Assistant: {data}")
+                await self.websocket.send(json.dumps(login_org))
+                data = await self.websocket.recv()
+                logging.info(f"Home Assistant: {data}")
+                break  # Connection successful, exit the loop
+            except websockets.exceptions.ConnectionClosedError:
+                logging.error("WebSocket connection closed unexpectedly. Retrying...")
                 await asyncio.sleep(5)  # Wait for a few seconds before retrying
-            else:
-                logging.error(f"Unexpected error: {e}")
-                raise  # Re-raise the exception if it's not a 502 error
-        except Exception as e:
-            logging.error(f"Error connecting to Home Assistant: {e}")
-            raise  # Re-raise any other unexpected exceptions
+            except websockets.exceptions.InvalidStatusCode as e:
+                if e.status_code == 502:
+                    logging.error("502 Bad Gateway. Retrying...")
+                    await asyncio.sleep(5)  # Wait for a few seconds before retrying
+                else:
+                    logging.error(f"Unexpected error: {e}")
+                    raise  # Re-raise the exception if it's not a 502 error
+            except Exception as e:
+                logging.error(f"Error connecting to Home Assistant: {e}")
+                raise  # Re-raise any other unexpected exceptions
 
-    logging.info("Successfully connected to Home Assistant.")
+        logging.info("Successfully connected to Home Assistant.")
 
     async def kodi_call_home(self, sender, data):
         if "trigger" not in data:
