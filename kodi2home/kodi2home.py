@@ -56,9 +56,9 @@ class kodi2home:
         await self.kodi_connection.server.Input.ExecuteAction("reloadkeymaps")
 
     async def connect_to_home(self):
-    logging.info(
-        f"Home assistant settings: {self.config['home_adress']},  {self.config['home_ssl']}, *"
-    )
+        logging.info(
+            f"Home assistant settings: {self.config['home_adress']},  {self.config['home_ssl']}, *"
+        )
     while True:
         try:
             if self.config["home_ssl"]:
