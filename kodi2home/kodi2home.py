@@ -78,11 +78,11 @@ class kodi2home:
                 break  # Connection successful, exit the loop
             except websockets.exceptions.ConnectionClosedError:
                 logging.error("WebSocket connection closed unexpectedly. Retrying...")
-                await asyncio.sleep(5)  # Wait for a few seconds before retrying
+                await asyncio.sleep(30)  # Wait for a few seconds before retrying
             except websockets.exceptions.InvalidStatusCode as e:
                 if e.status_code == 502:
                     logging.error("502 Bad Gateway. Retrying...")
-                    await asyncio.sleep(5)  # Wait for a few seconds before retrying
+                    await asyncio.sleep(30)  # Wait for a few seconds before retrying
                 else:
                     logging.error(f"Unexpected error: {e}")
                     raise  # Re-raise the exception if it's not a 502 error
@@ -142,10 +142,10 @@ class kodi2home:
                         logging.warning("Received empty data from Home Assistant")
             except websockets.exceptions.ConnectionClosedError:
                 logging.error("WebSocket connection closed unexpectedly. Retrying...")
-                await asyncio.sleep(5)  # Wait for a few seconds before retrying
+                await asyncio.sleep(30)  # Wait for a few seconds before retrying
             except Exception as e:
                 logging.error(f"An error occurred: {e}")
-                await asyncio.sleep(5)  # Wait for a few seconds before retrying
+                await asyncio.sleep(30)  # Wait for a few seconds before retrying
 
     async def run_recive_kodi(self):
         try:
