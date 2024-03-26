@@ -6,7 +6,7 @@
   "url": "https://github.com/DJJo14/kodi2home",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "init":false,
-  "startup": "initialize",
+  "startup": "application",
   "boot": "auto",
   "homeassistant_api": true,
   "options": {
