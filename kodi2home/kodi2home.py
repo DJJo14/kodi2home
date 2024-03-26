@@ -128,36 +128,24 @@ class kodi2home:
                 await self.websocket.send(json.dumps(service_call))
 
     async def run_recv_home(self):
-        await self.connect_to_home()
-        logging.info("connected to home")
-        while 1:
+        while True:
             try:
-                async with asyncio.timeout(100):
+                await self.connect_to_home()  # Ensure WebSocket connection is established
+                logging.info("Connected to Home Assistant")
+
+                while True:
                     home_data = await self.websocket.recv()
-            except TimeoutError:
-                home_data = ""
-
-            if home_data != "":
-                logging.info(f"data from home: {home_data}")
-                message_home = json.loads(home_data)
-
-                if "type" in message_home:
-                    if message_home["type"] == "ping":
-                        pong_message = {
-                            "type": "pong",
-                            "id": message_home["id"]
-                        }
-                        await self.websocket.send(json.dumps(pong_message))
-            else:
-                self.id_nr += 1
-                ping_message = {
-                    "id": self.id_nr,
-                    "type": "ping"
-                }
-                await self.websocket.send(json.dumps(ping_message))
-            
-
-        
+                    if home_data:
+                        logging.info(f"data from home: {home_data}")
+                        # Process received data here
+                    else:
+                        logging.warning("Received empty data from Home Assistant")
+            except websockets.exceptions.ConnectionClosedError:
+                logging.error("WebSocket connection closed unexpectedly. Retrying...")
+                await asyncio.sleep(5)  # Wait for a few seconds before retrying
+            except Exception as e:
+                logging.error(f"An error occurred: {e}")
+                await asyncio.sleep(5)  # Wait for a few seconds before retrying
 
     async def run_recive_kodi(self):
         try:
