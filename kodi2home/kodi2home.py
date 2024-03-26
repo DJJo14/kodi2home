@@ -17,8 +17,6 @@ logging.basicConfig(
 # <volume_up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.volume_up"})</volume_up>
 
 
-
-
 def ask_exit(signame, loop):
     print("got signal %s: exit" % signame)
     loop.stop()
