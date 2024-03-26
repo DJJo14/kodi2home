@@ -17,8 +17,6 @@ logging.basicConfig(
 # <volume_up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.volume_up"})</volume_up>
 
 
-
-
 def ask_exit(signame, loop):
     print("got signal %s: exit" % signame)
     loop.stop()
@@ -59,19 +57,38 @@ class kodi2home:
         logging.info(
             f"Home assistant settings: {self.config['home_adress']},  {self.config['home_ssl']}, *"
         )
-        if self.config["home_ssl"]:
-            home_ssl = True
-        else:
-            home_ssl = None
-        self.websocket = await websockets.connect(
-            self.config["home_adress"], ssl=home_ssl
-        )
-        login_org = {"type": "auth", "access_token": sys.argv[1]}
-        data = await self.websocket.recv()
-        logging.info(f"Home Assistant: {data}")
-        await self.websocket.send(json.dumps(login_org))
-        data = await self.websocket.recv()
-        logging.info(f"Home Assistant: {data}")
+        while True:
+            try:
+                if self.config["home_ssl"]:
+                    home_ssl = True
+                else:
+                    home_ssl = None
+                    
+                self.websocket = await websockets.connect(
+                    self.config["home_adress"], ssl=home_ssl
+                )
+                login_org = {"type": "auth", "access_token": sys.argv[1]}
+                data = await self.websocket.recv()
+                logging.info(f"Home Assistant: {data}")
+                await self.websocket.send(json.dumps(login_org))
+                data = await self.websocket.recv()
+                logging.info(f"Home Assistant: {data}")
+                break  # Connection successful, exit the loop
+            except websockets.exceptions.ConnectionClosedError:
+                logging.error("WebSocket connection closed unexpectedly. Retrying...")
+                await asyncio.sleep(30)  # Wait for a few seconds before retrying
+            except websockets.exceptions.InvalidStatusCode as e:
+                if e.status_code == 502:
+                    logging.error("502 Bad Gateway. Retrying...")
+                    await asyncio.sleep(30)  # Wait for a few seconds before retrying
+                else:
+                    logging.error(f"Unexpected error: {e}")
+                    raise  # Re-raise the exception if it's not a 502 error
+            except Exception as e:
+                logging.error(f"Error connecting to Home Assistant: {e}")
+                raise  # Re-raise any other unexpected exceptions
+
+        logging.info("Successfully connected to Home Assistant.")
 
     async def kodi_call_home(self, sender, data):
         if "trigger" not in data:
@@ -109,36 +126,24 @@ class kodi2home:
                 await self.websocket.send(json.dumps(service_call))
 
     async def run_recv_home(self):
-        await self.connect_to_home()
-        logging.info("connected to home")
-        while 1:
+        while True:
             try:
-                async with asyncio.timeout(100):
+                await self.connect_to_home()  # Ensure WebSocket connection is established
+                logging.info("Connected to Home Assistant")
+
+                while True:
                     home_data = await self.websocket.recv()
-            except TimeoutError:
-                home_data = ""
-
-            if home_data != "":
-                logging.info(f"data from home: {home_data}")
-                message_home = json.loads(home_data)
-
-                if "type" in message_home:
-                    if message_home["type"] == "ping":
-                        pong_message = {
-                            "type": "pong",
-                            "id": message_home["id"]
-                        }
-                        await self.websocket.send(json.dumps(pong_message))
-            else:
-                self.id_nr += 1
-                ping_message = {
-                    "id": self.id_nr,
-                    "type": "ping"
-                }
-                await self.websocket.send(json.dumps(ping_message))
-            
-
-        
+                    if home_data:
+                        logging.info(f"data from home: {home_data}")
+                        # Process received data here
+                    else:
+                        logging.warning("Received empty data from Home Assistant")
+            except websockets.exceptions.ConnectionClosedError:
+                logging.error("WebSocket connection closed unexpectedly. Retrying...")
+                await asyncio.sleep(30)  # Wait for a few seconds before retrying
+            except Exception as e:
+                logging.error(f"An error occurred: {e}")
+                await asyncio.sleep(30)  # Wait for a few seconds before retrying
 
     async def run_recive_kodi(self):
         try:
