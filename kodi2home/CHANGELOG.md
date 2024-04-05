@@ -1,3 +1,6 @@
+### 0.3.3
+ - Fix restart home assistant. Tanks to @goodlucknow
+
 ### 0.3.2
  - Docker build fix because of?
  https://stackoverflow.com/questions/75608323/how-do-i-solve-error-externally-managed-environment-every-time-i-use-pip-3
