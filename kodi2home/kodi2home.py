@@ -16,6 +16,9 @@ logging.basicConfig(
 # put this in gen.xml
 # <volume_up>NotifyAll("kodi2home", "kodi_call_home", {"trigger":"automation.volume_up"})</volume_up>
 
+class Connection_startup_failed(Exception):
+    "Raised when the input value is less than 18"
+    pass
 
 
 
@@ -26,6 +29,7 @@ def ask_exit(signame, loop):
 
 class kodi2home:
     id_nr = 1
+    home_connected = False
 
     def __init__(self, config_file):
         with open(config_file, "r") as inputfile:
@@ -70,8 +74,10 @@ class kodi2home:
         data = await self.websocket.recv()
         logging.info(f"Home Assistant: {data}")
         await self.websocket.send(json.dumps(login_org))
+        self.home_connected = True
         data = await self.websocket.recv()
         logging.info(f"Home Assistant: {data}")
+
 
     async def kodi_call_home(self, sender, data):
         if "trigger" not in data:
@@ -94,10 +100,15 @@ class kodi2home:
 
     async def run_send_home(self):
         while 1:
-            service_call = await self.que1.get()
             try:
-                await self.websocket.send(json.dumps(service_call))
-            except websockets.exceptions.ConnectionClosedOK:
+                await self.connect_to_home()
+                await asyncio.sleep(0)
+                if self.home_connected == False:
+                    raise Connection_startup_failed
+                while 1:
+                    service_call = await self.que1.get()
+                    await self.websocket.send(json.dumps(service_call))
+            except websockets.exceptions.ConnectionClosedOK as e:
                 await self.websocket.close()
                 await self.connect_to_home()
                 logging.info(f"reconnect on oke connection close")
@@ -107,35 +118,46 @@ class kodi2home:
                 await self.connect_to_home()
                 logging.info(f"reconnect on way to fast pressing buttons")
                 await self.websocket.send(json.dumps(service_call))
+            except Connection_startup_failed:
+                await self.connect_to_home()
+                logging.info(f"reconnect on way to fast pressing buttons")
+                await asyncio.sleep(30)
 
     async def run_recv_home(self):
-        await self.connect_to_home()
+
+            
         logging.info("connected to home")
         while 1:
+            while self.home_connected == False:
+                await asyncio.sleep(0.5)
             try:
-                async with asyncio.timeout(100):
-                    home_data = await self.websocket.recv()
-            except TimeoutError:
-                home_data = ""
+                try:
+                    async with asyncio.timeout(100):
+                        home_data = await self.websocket.recv()
+                except TimeoutError:
+                    home_data = ""
 
-            if home_data != "":
-                logging.info(f"data from home: {home_data}")
-                message_home = json.loads(home_data)
+                if home_data != "":
+                    logging.info(f"data from home: {home_data}")
+                    message_home = json.loads(home_data)
 
-                if "type" in message_home:
-                    if message_home["type"] == "ping":
-                        pong_message = {
-                            "type": "pong",
-                            "id": message_home["id"]
-                        }
-                        await self.websocket.send(json.dumps(pong_message))
-            else:
-                self.id_nr += 1
-                ping_message = {
-                    "id": self.id_nr,
-                    "type": "ping"
-                }
-                await self.websocket.send(json.dumps(ping_message))
+                    if "type" in message_home:
+                        if message_home["type"] == "ping":
+                            pong_message = {
+                                "type": "pong",
+                                "id": message_home["id"]
+                            }
+                            await self.websocket.send(json.dumps(pong_message))
+                else:
+                    self.id_nr += 1
+                    ping_message = {
+                        "id": self.id_nr,
+                        "type": "ping"
+                    }
+                    await self.websocket.send(json.dumps(ping_message))
+            except websockets.exceptions.WebSocketException:
+                self.home_connected = False
+                await asyncio.sleep(0.5)
             
 
         
